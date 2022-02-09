@@ -2,6 +2,26 @@
     margin: 0px;
     padding: 0px;
     box-sizing: border-box;
+    user-select: none;
+}
+body {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+}
+.result {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    height: 100px;
+    width: 100%;
+    margin: auto;
+    font-size: 50px;
 }
 .boardContainer {
   display: grid;
@@ -9,11 +29,9 @@
   grid-auto-columns: 1fr;
   grid-template-rows: 1fr 1fr 1fr;
   grid-auto-rows: 1fr;
-  width: 80vw;
-  min-height: 40vh;
+  width: 100%;
+  height: 80%;
   gap: 2px;
-  margin: auto;
-  margin-top: 50%;
 }
 .boardItem {
   display: flex;
