@@ -1,6 +1,6 @@
 const game = (() => {
   const gridItems = document.querySelectorAll("[data-gridItem]");
-  const winnerText = document.querySelector("#winnerText");
+  const resultText = document.querySelector("#resultText");
   const winningCombination = [
     [0, 1, 2],
     [3, 4, 5],
@@ -12,7 +12,11 @@ const game = (() => {
     [2, 4, 6],
   ];
   const winBgColor = "rgb(25, 167, 77)";
+  const winDrawColor = "white";
   const drawBgColor = "rgb(191, 31, 31)";
+  const defaultBgColor = "white";
+  const defaultColor = "black";
+
   const createPlayer = (name, marker) => {
     return { name, marker };
   };
@@ -31,11 +35,11 @@ const game = (() => {
   let winningCombinationArr = null;
 
   const checkForWin = (currentPlayer) => {
-    return winningCombination.some((combo) => {
-      return combo.every((i) => {
-        let res = gridItems[i].textContent === currentPlayer.marker;
+    return winningCombination.some((combination) => {
+      return combination.every((item) => {
+        let res = gridItems[item].textContent === currentPlayer.marker;
         if (res) {
-          winningCombinationArr = combo;
+          winningCombinationArr = combination;
           return true;
         }
       });
@@ -43,25 +47,29 @@ const game = (() => {
   };
 
   const checkForDraw = () => {
-    let arr = Array.from(gridItems);
+    const gridItemsArr = Array.from(gridItems);
 
-    let res = arr.every((el) => el.textContent !== "");
+    const res = gridItemsArr.every((item) => item.textContent !== "");
 
     if (res) {
       isGameOver = true;
-      arr.map((el) => {
-        el.style.backgroundColor = drawBgColor;
-        el.style.color = "white";
-      });
-      winnerText.textContent = `DRAW!`;
+      highlightDraw(gridItemsArr);
+      resultText.textContent = `DRAW!`;
     }
     return res;
   };
 
+  function highlightDraw(gridItemsArr) {
+    gridItemsArr.map((item) => {
+      item.style.backgroundColor = drawBgColor;
+      item.style.color = winDrawColor;
+    });
+  }
+
   function highlightWinningPattern(pattern, bgColor) {
-    for (let path of pattern) {
-      gridItems[path].style.backgroundColor = bgColor;
-      gridItems[path].style.color = "white";
+    for (let item of pattern) {
+      gridItems[item].style.backgroundColor = bgColor;
+      gridItems[item].style.color = winDrawColor;
     }
   }
 
@@ -70,22 +78,24 @@ const game = (() => {
     element.textContent = currentPlayer.marker;
     if (checkForWin(currentPlayer)) {
       isGameOver = true;
-      winnerText.textContent = `${currentPlayer.name} WINS!`;
+      resultText.textContent = `${currentPlayer.name} WINS!`;
       highlightWinningPattern(winningCombinationArr, winBgColor);
       console.log(winningCombinationArr);
+    } else {
+      changePlayer();
+      resultText.textContent = `${currentPlayer.name}'s Turn`;
+      checkForDraw();
     }
-    console.log(checkForDraw());
-    changePlayer();
   }
 
   function restart() {
     currentPlayer = player1;
     isGameOver = false;
-    winnerText.textContent = ""
+    resultText.textContent = `${currentPlayer.name}'s Turn`;
     gridItems.forEach((item) => {
       item.textContent = "";
-      item.style.backgroundColor = "white";
-      item.style.color = "black";
+      item.style.backgroundColor = defaultBgColor;
+      item.style.color = defaultColor;
     });
   }
 
@@ -96,4 +106,6 @@ const game = (() => {
   gridItems.forEach((element) => {
     element.addEventListener("click", () => handleClick(element));
   });
+
+  resultText.textContent = currentPlayer.name + "' Turn"
 })();
